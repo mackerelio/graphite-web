@@ -22,7 +22,7 @@ import time
 
 from graphite.logger import log
 from graphite.render.datalib import fetchData, TimeSeries, timestamp
-from graphite.render.attime import parseTimeOffset
+from graphite.render.attime import parseTimeOffset, parseATTime
 
 from graphite.events import models
 #XXX format_units() should go somewhere else
