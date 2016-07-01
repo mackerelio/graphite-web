@@ -1983,6 +1983,43 @@ def linearRegression(requestContext, seriesList, startSourceAt=None, endSourceAt
     results.append(newSeries)
   return results
 
+def timeLeftByLinearRegression(requestContext, seriesList, threshold, startSourceAt=None, endSourceAt=None):
+  """
+  Example:
+
+  .. code-block:: none
+
+    &target=timeLeftByLinearRegression(Server.instance01.threads.busy, 12.3, '-1d')
+    &target=timeLeftByLinearRegression(Server.instance*.threads.busy, 80, "00:00 20140101","11:59 20140630")
+  """
+  results = []
+  sourceContext = requestContext.copy()
+  if startSourceAt is not None: sourceContext['startTime'] = parseATTime(startSourceAt)
+  if endSourceAt is not None: sourceContext['endTime'] = parseATTime(endSourceAt)
+
+  sourceList = []
+  for series in seriesList:
+    source = evaluateTarget(sourceContext, series.pathExpression)
+    sourceList.extend(source)
+
+  for source,series in zip(sourceList, seriesList):
+    newName = 'timeLeftByLinearRegression(%s, %s, %s, %s)' % (
+        series.name,
+        threshold,
+        int(time.mktime(sourceContext['startTime'].timetuple())),
+        int(time.mktime(sourceContext['endTime'].timetuple()))
+        )
+    forecast = linearRegressionAnalysis(source)
+    if forecast is None:
+      continue
+    factor, offset = forecast
+    if factor == 0: continue
+    values = [ (threshold - offset) / factor - (series.start + i * series.step) for i in range(len(series)) ]
+    newSeries = TimeSeries(newName, series.start, series.end, series.step, values)
+    newSeries.pathExpression = newSeries.name
+    results.append(newSeries)
+  return results
+
 def drawAsInfinite(requestContext, seriesList):
   """
   Takes one metric or a wildcard seriesList.
@@ -2765,6 +2802,7 @@ SeriesFunctions = {
   'holtWintersConfidenceArea': holtWintersConfidenceArea,
   'holtWintersAberration': holtWintersAberration,
   'linearRegression': linearRegression,
+  'timeLeftByLinearRegression': timeLeftByLinearRegression,
   'asPercent' : asPercent,
   'pct' : asPercent,
   'diffSeries' : diffSeries,
