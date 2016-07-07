@@ -929,6 +929,7 @@ function createFunctionsMenu() {
         {text: 'Holt-Winters Confidence Bands', handler: applyFuncToEach('holtWintersConfidenceBands')},
         {text: 'Holt-Winters Aberration', handler: applyFuncToEach('holtWintersAberration')},
         {text: 'Linear Regression', handler: applyFuncToEachWithInput('linearRegression', 'Start source of regression at (example: 14:57 20150115)', {quote: true})},
+        {text: 'Time Left By Linear Regression', handler: applyFuncToEachWithInput('timeLeftByLinearRegression', 'Threshold (example: 12.3)', 'Start source of regression at (example: 14:57 20150115)', {quote: true})},
         {text: 'As Percent', handler: applyFuncToEachWithInput('asPercent', 'Please enter the value that corresponds to 100% or leave blank to use the total', {allowBlank: true})},
         {text: 'Difference (of 2 series)', handler: applyFuncToAll('diffSeries')},
         {text: 'Ratio (of 2 series)', handler: applyFuncToAll('divideSeries')}
