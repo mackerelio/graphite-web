@@ -28,7 +28,7 @@ weekdays = ['sun','mon','tue','wed','thu','fri','sat']
 def parseATTime(s, tzinfo=None):
   if tzinfo is None:
     tzinfo = pytz.timezone(settings.TIME_ZONE)
-  s = s.strip().lower().replace('_','').replace(',','').replace(' ','')
+  s = str(s).strip().lower().replace('_','').replace(',','').replace(' ','')
   if s.isdigit():
     if len(s) == 8 and int(s[:4]) > 1900 and int(s[4:6]) < 13 and int(s[6:]) < 32:
       pass #Fall back because its not a timestamp, its YYYYMMDD form
